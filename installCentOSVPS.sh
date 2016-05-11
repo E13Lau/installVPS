@@ -15,7 +15,6 @@ function install_vps() {
     install_SS
     setup_SS
     installAria2
-    installDOF
     addSwap
 }
 
@@ -65,10 +64,10 @@ EOF
 # 启动服务
     echo "后台启动 shadowsocks..."
     ssserver -c /etc/shadowsocks.json -d start
-
+    echo 'ssserver -c /etc/shadowsocks.json -d start' >> /etc/rc.local
 }
 
-function installAria2() {
+function install_Aria2() {
     echo "安装 Aria2..."
     yum install aria2 -y
     mkdir /root/Downloads
@@ -151,7 +150,7 @@ save-session-interval=60
 EOF
 }
 
-function installDOF() {
+function install_DOF() {
     cd ~
     echo "下载Server..."
 #   下载Server...
@@ -188,11 +187,34 @@ function addSwap() {
     /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
     /sbin/mkswap /var/swap.1
     /sbin/swapon /var/swap.1
+    echo '/sbin/swapon /var/swap.1' >> /etc/rc.local
 }
 
+function install_net-speeder() {
+    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    rpm -ivh epel-release-6-8.noarch.rpm
+    yum -y install libnet libpcap libnet-devel libpcap-devel
+    yum -y install zip unzip
+    wget https://github.com/snooda/net-speeder/archive/master.zip
+    unzip master.zip
+    cd net-speeder-master
+    sh build.sh
+    cp ./net_speeder /usr/bin
+    nohup /usr/bin/net_speeder venet0 "ip" >/dev/null 2>&1 &
+    echo 'nohup /usr/bin/net_speeder venet0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
+    echo "net-speeder 启动成功..."
+}
+
+function install_Dropbox() {
+    cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
+    ~/.dropbox-dist/dropboxd
+    ~/.dropbox-dist/dropboxd &
+}
 #function removeTemp() {
 #
 #}
+#google authentication
 
 install_vps
+
 
