@@ -6,15 +6,13 @@
 #  Created by command.Zi on 16/5/11.
 #
 
-function get_my_ip() {
+function installDOF() {
     echo "获取 IP..."
     IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
     if [ -z $IP ]; then
     IP=`curl -s ifconfig.me/ip`
     fi
-}
 
-function installDOF() {
     cd ~
     echo "下载Server..."
 #   下载Server...
@@ -41,5 +39,4 @@ function installDOF() {
     sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.cfg"`
 }
 
-get_my_ip
 installDOF
