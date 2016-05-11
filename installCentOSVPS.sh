@@ -14,8 +14,10 @@ function install_vps() {
     get_my_ip
     install_SS
     setup_SS
-    installAria2
+    install_Aria2
     addSwap
+    install_Dropbox
+    install_net-speeder
 }
 
 # Make sure only root can run our script
@@ -150,44 +152,12 @@ save-session-interval=60
 EOF
 }
 
-function install_DOF() {
-    cd ~
-    echo "下载Server..."
-#   下载Server...
-    aria2c -c -s10 -k1M -x10 -o 'Server.tar.gz' --header "User-Agent: netdisk;5.3.4.5;PC;PC-Windows;5.1.2600;WindowsBaiduYunGuanJia"  --header "Referer: http://pan.baidu.com/disk/home"  --header "Cookie: BDUSS=nA0Wn5OVkhVNWJwRWtvcFJySmJ6ZG5PNGQtNkZHMUt4dEphWUJWZX5OU2FuMDlYQVFBQUFBJCQAAAAAAAAAAAEAAAAqmT8lbGtkODg2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJoSKFeaEihXd;pcsett=1462974954-1c669b501ce839aa29af09cf430e70a5"  "http://d.pcs.baidu.com/file/5e5780ee4ae0c534c4111cb993ef6900?fid=2569102560-250528-597905699960375&time=1462888569&rt=sh&sign=FDTAERV-DCb740ccc5511e5e8fedcff06b081203-enQ1CEPjHmHF9%2BMGnpyA4OvhvGU%3D&expires=8h&chkv=1&chkbd=0&chkpc=&dp-logid=3036265092391645472&dp-callid=0&r=271625130"
-    aria2c -c -s10 -k1M -x10 -o 'Script.pvf' --header "User-Agent: netdisk;5.3.4.5;PC;PC-Windows;5.1.2600;WindowsBaiduYunGuanJia"  --header "Referer: http://pan.baidu.com/disk/home"  --header "Cookie: BDUSS=nA0Wn5OVkhVNWJwRWtvcFJySmJ6ZG5PNGQtNkZHMUt4dEphWUJWZX5OU2FuMDlYQVFBQUFBJCQAAAAAAAAAAAEAAAAqmT8lbGtkODg2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJoSKFeaEihXd;pcsett=1462975025-a9b2de48fa3b5485e4a2edfcbce69f44"  "http://d.pcs.baidu.com/file/086a2cceef43b363ad2fc055d4c51d93?fid=2569102560-250528-183038949702254&time=1462888675&rt=sh&sign=FDTAERV-DCb740ccc5511e5e8fedcff06b081203-I3gYK7OPUJxzRx0iLcnp%2BXCKSdM%3D&expires=8h&chkv=1&chkbd=0&chkpc=&dp-logid=3036293766884338079&dp-callid=0&r=887282186"
-
-    cp Server.tar.gz /
-    cd /
-    tar -zvxf Server.tar.gz
-    tar -zvxf etc.tar.gz
-    tar -zvxf var.tar.gz
-# yum remove mysql-libs
-    cd ~
-    wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-    rpm -ivh mysql-community-release-el7-5.noarch.rpm
-    yum makecache
-    yum install mysql-community-server-5.6.25-2.el7.x86_64 -y
-    systemctl enable mysqld
-    systemctl start mysqld
-    yum install -y psmisc
-    yum install -y gcc gcc-c++ make zlib-devel
-    yum install -y xulrunner.i686
-    yum install -y libXtst.i686
-    cd /home/GeoIP-1.4.8/
-    ./configure
-    make && make check && make install
-    cd /home/neople/
-    sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.tbl"`
-    sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.cfg"`
-}
-
 function addSwap() {
     echo "添加 Swap..."
     /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
     /sbin/mkswap /var/swap.1
     /sbin/swapon /var/swap.1
-    echo '/sbin/swapon /var/swap.1' >> /etc/rc.local
+#  echo '/sbin/swapon /var/swap.1' >> /etc/rc.local
 }
 
 function install_net-speeder() {
@@ -198,6 +168,7 @@ function install_net-speeder() {
     wget https://github.com/snooda/net-speeder/archive/master.zip
     unzip master.zip
     cd net-speeder-master
+    yum install -y gcc gcc-c++ make zlib-devel
     sh build.sh
     cp ./net_speeder /usr/bin
     nohup /usr/bin/net_speeder venet0 "ip" >/dev/null 2>&1 &
