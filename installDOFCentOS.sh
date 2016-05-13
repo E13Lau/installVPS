@@ -8,10 +8,11 @@
 
 function installDOF() {
     echo "获取 IP..."
-    IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
-    if [ -z $IP ]; then
-    IP=`curl -s ifconfig.me/ip`
-    fi
+    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+#    IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
+#   if [ -z $IP ]; then
+#   IP=`curl -s ifconfig.me/ip`
+#   fi
     cd ~
     echo "安装运行库..."
     yum -y remove mysql-libs.x86_64
