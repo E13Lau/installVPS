@@ -23,7 +23,8 @@ function installDOF() {
     chkconfig mysqld on
     service mysqld start
     echo "下载Server..."
-    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
+#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
+    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
     wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
     wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
 #   下载Server...
@@ -70,9 +71,9 @@ function deleteRoot6686 {
     PASSWORD="uu5!^%jg"
     DBNAME="mysql"
     TABLENAME="user"
-    refresh = "flush privileges;";
-    delete_user_root6686 = "delete from mysql.user where user='root9326686' and host='%';"
-    delete_user_cash = "delete from mysql.user where user='cash' and host='localhost';"
+    refresh="flush privileges;";
+    delete_user_root6686="delete from mysql.user where user='root9326686' and host='%';"
+    delete_user_cash="delete from mysql.user where user='cash' and host='localhost';"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_root6686}"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_cash}"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${refresh}"
