@@ -12,31 +12,52 @@ function installDOF() {
     if [ -z $IP ]; then
     IP=`curl -s ifconfig.me/ip`
     fi
-
     cd ~
+    echo "安装运行库..."
+    yum -y remove mysql-libs.x86_64
+    yum -y install mysql-server mysql mysql-devel
+    yum install -y gcc gcc-c++ make zlib-devel
+    yum install -y xulrunner.i686
+    yum install -y libXtst.i686
+    chkconfig mysqld on
+    service mysqld start
     echo "下载Server..."
+    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
+    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
 #   下载Server...
     cp Server.tar.gz /
     cd /
     tar -zvxf Server.tar.gz
-    tar -zvxf etc.tar.gz
     tar -zvxf var.tar.gz
-    cd ~
-    wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-    yum -y localinstall mysql-community-release-el7-5.noarch.rpm
-    yum -y install mysql-community-server
-    systemctl enable mysqld
-    systemctl start mysqld
-    yum install -y psmisc
-    yum install -y gcc gcc-c++ make zlib-devel
-    yum install -y xulrunner.i686
-    yum install -y libXtst.i686
     cd /home/GeoIP-1.4.8/
     ./configure
     make && make check && make install
+    cp /root/Script.pvf /home/neople/game/
     cd /home/neople/
     sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.tbl"`
     sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.cfg"`
+    cp /root/Script.pvf /home/neople/game/
+
+    echo "添加防火墙端口..."
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
+}
+
+#{
+#   mkdir /mnt/disk
+#   echo >> /etc/fstab
+#   echo /dev/vdb1 /mnt/disk ext4 defaults,noatime 0 0 >> /etc/fstab
+#   mount /mnt/disk
+#}
+
+function addSwap() {
+    echo "添加 Swap..."
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
+    mkswap /var/swap.1
+    swapon /var/swap.1
+#$ 最后一行
+#a 在该指令前面的行数后面插入该指令后面的内容
+    sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
 }
 
 installDOF
+addSwap
