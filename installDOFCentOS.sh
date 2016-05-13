@@ -40,6 +40,9 @@ function installDOF() {
 
     echo "添加防火墙端口..."
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
+
+    service iptables restart
+    service mysqld restart
 }
 
 #{
@@ -59,5 +62,21 @@ function addSwap() {
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
 }
 
+function deleteRoot6686 {
+    HOSTNAME="127.0.0.1"
+    PORT="3306"
+    USERNAME="game"
+    PASSWORD="uu5!^%jg"
+    DBNAME="mysql"
+    TABLENAME="user"
+    refresh = "flush privileges;";
+    delete_user_root6686 = "delete from mysql.user where user='root9326686' and host='%';"
+    delete_user_cash = "delete from mysql.user where user='cash' and host='localhost';"
+    mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_root6686}"
+    mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_cash}"
+    mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${refresh}"
+}
+
 installDOF
 addSwap
+deleteRoot6686
