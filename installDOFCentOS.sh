@@ -25,6 +25,7 @@ function installDOF() {
     echo "下载Server..."
     wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
     wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
+    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
 #   下载Server...
     cp Server.tar.gz /
     cd /
@@ -33,12 +34,11 @@ function installDOF() {
     cd /home/GeoIP-1.4.8/
     ./configure
     make && make check && make install
-    cp /root/Script.pvf /home/neople/game/
     cd /home/neople/
     sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.tbl"`
     sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.cfg"`
     cp /root/Script.pvf /home/neople/game/
-
+    cp /root/publickey.pem /home/neople/game/
     echo "添加防火墙端口..."
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
 
@@ -55,7 +55,7 @@ function installDOF() {
 
 function addSwap() {
     echo "添加 Swap..."
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192
     mkswap /var/swap.1
     swapon /var/swap.1
 #$ 最后一行
