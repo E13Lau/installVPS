@@ -15,8 +15,8 @@ function install_vps() {
     install_SS
     setup_SS
     install_Aria2
-    addSwap
-    install_Dropbox
+#    addSwap
+#  install_Dropbox
     install_net-speeder
 }
 
@@ -62,6 +62,10 @@ function setup_SS() {
     "workers":1
 }
 EOF
+
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8381 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8382 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8481 -j ACCEPT' /etc/sysconfig/iptables
 
 # 启动服务
     echo "后台启动 shadowsocks..."
@@ -171,8 +175,8 @@ function install_net-speeder() {
     yum install -y gcc gcc-c++ make zlib-devel
     sh build.sh
     cp ./net_speeder /usr/bin
-    nohup /usr/bin/net_speeder venet0 "ip" >/dev/null 2>&1 &
-    echo 'nohup /usr/bin/net_speeder venet0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
+    nohup /usr/bin/net_speeder eth0 "ip" >/dev/null 2>&1 &
+    echo 'nohup /usr/bin/net_speeder eth0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
     echo "net-speeder 启动成功..."
 }
 
@@ -181,6 +185,7 @@ function install_Dropbox() {
     ~/.dropbox-dist/dropboxd
     ~/.dropbox-dist/dropboxd &
 }
+
 #function removeTemp() {
 #
 #}

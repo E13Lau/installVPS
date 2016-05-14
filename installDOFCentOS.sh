@@ -6,6 +6,12 @@
 #  Created by command.Zi on 16/5/11.
 #
 
+function install {
+    addSwap
+    installDOF
+    deleteRoot6686
+}
+
 function installDOF() {
     echo "获取 IP..."
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
@@ -75,7 +81,7 @@ function addSwap() {
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
 }
 
-function deleteRoot6686 {
+function deleteRoot6686() {
     HOSTNAME="127.0.0.1"
     PORT="3306"
     USERNAME="game"
@@ -84,12 +90,18 @@ function deleteRoot6686 {
     TABLENAME="user"
     refresh="flush privileges;";
     delete_user_root6686="delete from mysql.user where user='root9326686' and host='%';"
-    delete_user_cash="delete from mysql.user where user='cash' and host='localhost';"
+    delete_user_cash="delete from mysql.user where user='cash' and host='127.0.0.1';"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_root6686}"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_cash}"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${refresh}"
 }
 
-installDOF
-addSwap
-deleteRoot6686
+function removeTemp() {
+    rm -f /root/Script.pvf
+    rm -f /root/mysql57*
+    rm -f /root/publickey.pem
+    rm -f /var.tar.gz
+    rm -f /etc.tar.gz
+    rm -f /Server.tar.gz
+    rm -f /root/installDOFCentOS.sh
+}
