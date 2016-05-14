@@ -10,6 +10,17 @@ function install {
     addSwap
     installDOF
     deleteRoot6686
+    removeTemp
+}
+
+function addSwap() {
+    echo "添加 Swap..."
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192
+    mkswap /var/swap.1
+    swapon /var/swap.1
+    #$ 最后一行
+    #a 在该指令前面的行数后面插入该指令后面的内容
+    sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
 }
 
 function installDOF() {
@@ -71,15 +82,6 @@ function installDOF() {
 #   mount /mnt/disk
 #}
 
-function addSwap() {
-    echo "添加 Swap..."
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192
-    mkswap /var/swap.1
-    swapon /var/swap.1
-#$ 最后一行
-#a 在该指令前面的行数后面插入该指令后面的内容
-    sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
-}
 
 function deleteRoot6686() {
     HOSTNAME="127.0.0.1"
@@ -100,8 +102,11 @@ function removeTemp() {
     rm -f /root/Script.pvf
     rm -f /root/mysql57*
     rm -f /root/publickey.pem
+    rm -f /root/Server.tar.gz
     rm -f /var.tar.gz
     rm -f /etc.tar.gz
     rm -f /Server.tar.gz
     rm -f /root/installDOFCentOS.sh
 }
+
+install
