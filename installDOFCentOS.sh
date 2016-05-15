@@ -92,9 +92,9 @@ function deleteRoot6686() {
     TABLENAME="user"
     refresh="flush privileges;";
     delete_user_root6686="delete from mysql.user where user='root9326686' and host='%';"
-    delete_user_cash="delete from mysql.user where user='cash' and host='127.0.0.1';"
+#  delete_user_cash="delete from mysql.user where user='cash' and host='127.0.0.1';"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_root6686}"
-    mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_cash}"
+#  mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${delete_user_cash}"
     mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e "${refresh}"
 }
 
