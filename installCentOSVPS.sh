@@ -15,8 +15,8 @@ function install_vps() {
     install_SS
     setup_SS
     install_Aria2
-#    addSwap
-#  install_Dropbox
+    addSwap
+    install_Dropbox
     install_net-speeder
 }
 
@@ -31,7 +31,8 @@ function rootness() {
 # Get IP address of the server
 function get_my_ip() {
     echo "获取 IP..."
-    IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
+    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+#IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
     if [ -z $IP ]; then
     IP=`curl -s ifconfig.me/ip`
     fi
@@ -57,7 +58,7 @@ function setup_SS() {
     "8481":"CylCyl"
     },
     "timeout":300,
-    "method":"rc4-md5",
+    "method":"bf-cfb",
     "fast_open":true,
     "workers":1
 }
@@ -161,7 +162,7 @@ function addSwap() {
     /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
     /sbin/mkswap /var/swap.1
     /sbin/swapon /var/swap.1
-#  echo '/sbin/swapon /var/swap.1' >> /etc/rc.local
+    sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
 }
 
 function install_net-speeder() {
