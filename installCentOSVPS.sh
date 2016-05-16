@@ -16,8 +16,8 @@ function install_vps() {
     setup_SS
     install_Aria2
     addSwap
-    install_Dropbox
     install_net-speeder
+    install_Dropbox
 }
 
 # Make sure only root can run our script
@@ -76,7 +76,10 @@ EOF
 
 function install_Aria2() {
     echo "安装 Aria2..."
+    wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+    rpm -ivh rpmforge-release-0.5.2-2.el6.rf.i686.rpm
     yum install aria2 -y
+    rm -f rpmforge-release-0.5.2-2.el6.rf.i686.rpm
     mkdir /root/Downloads
     touch /root/Downloads/aria2.conf
     touch /root/Downloads/aria2.session
@@ -179,6 +182,9 @@ function install_net-speeder() {
     nohup /usr/bin/net_speeder eth0 "ip" >/dev/null 2>&1 &
     echo 'nohup /usr/bin/net_speeder eth0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
     echo "net-speeder 启动成功..."
+    rm -f epel-release-6-8.noarch.rpm
+    rm -f rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+    rm -f master.zip
 }
 
 function install_Dropbox() {

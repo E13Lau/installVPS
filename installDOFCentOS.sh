@@ -40,10 +40,18 @@ function installDOF() {
     chkconfig mysqld on
     service mysqld start
     echo "下载Server..."
+#修改过的
 #    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
-    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
-    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
-    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
+#原版
+#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
+
+#    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
+#    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
+
+#坚果云
+    wget -O /root/publickey.pem https://www.jianguoyun.com/p/DcpdTMsQrpP6BRiJvxQ
+    wget -O /root/Script.pvf https://www.jianguoyun.com/p/DffjaEYQrpP6BRiFvxQ
+    wget -O /root/Server.tar.gz https://www.jianguoyun.com/p/DWhYqA8QrpP6BRiHvxQ
 #   下载Server...
     cp Server.tar.gz /
     cd /
