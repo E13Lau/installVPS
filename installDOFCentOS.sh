@@ -127,7 +127,6 @@ function removeTemp() {
     read ANS
     case $ANS in
     y|Y|yes|Yes)
-    *)
     rm -f /root/Script.pvf
     rm -f /root/mysql57*
     rm -f /root/publickey.pem
@@ -139,6 +138,16 @@ function removeTemp() {
     ;;
     n|N|no|No)
     exit 0
+    ;;
+    *)
+    rm -f /root/Script.pvf
+    rm -f /root/mysql57*
+    rm -f /root/publickey.pem
+    rm -f /root/Server.tar.gz
+    rm -f /var.tar.gz
+    rm -f /etc.tar.gz
+    rm -f /Server.tar.gz
+    rm -f /root/installDOFCentOS.sh
     ;;
     esac
 }
