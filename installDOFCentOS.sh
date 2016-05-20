@@ -15,7 +15,7 @@ function install {
 
 function addSwap() {
     echo "添加 Swap..."
-    if read -n1 -t 5 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
+    if read -n1 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
     then
     /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1000*$answer
     mkswap /var/swap.1
@@ -59,10 +59,10 @@ function installDOF() {
 #    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
 #    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
 
-#   坚果云
-    wget -O /root/publickey.pem https://www.jianguoyun.com/p/DcpdTMsQrpP6BRiJvxQ
-    wget -O /root/Script.pvf https://www.jianguoyun.com/p/DffjaEYQrpP6BRiFvxQ
-    wget -O /root/Server.tar.gz https://www.jianguoyun.com/p/DWhYqA8QrpP6BRiHvxQ
+#   七牛
+    wget -O /root/publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
+    wget -O /root/Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
+    wget -O /root/Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
 #   下载Server...
     cp Server.tar.gz /
     cd /
