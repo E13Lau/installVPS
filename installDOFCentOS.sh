@@ -24,7 +24,10 @@ function addSwap() {
 #   $ 最后一行
 #   a 在该指令前面的行数后面插入该指令后面的内容
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
+    echo "添加 Swap 成功"
     else
+    echo "没有添加 Swap"
+    fi
 }
 
 function installDOF() {
