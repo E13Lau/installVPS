@@ -15,12 +15,16 @@ function install {
 
 function addSwap() {
     echo "添加 Swap..."
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192
+    if read -n1 -t 5 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
+    then
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1000*$answer
     mkswap /var/swap.1
     swapon /var/swap.1
-    #$ 最后一行
-    #a 在该指令前面的行数后面插入该指令后面的内容
+#   加入开机自动挂载
+#   $ 最后一行
+#   a 在该指令前面的行数后面插入该指令后面的内容
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
+    else
 }
 
 function installDOF() {
@@ -33,22 +37,26 @@ function installDOF() {
     cd ~
     echo "安装运行库..."
     yum -y remove mysql-libs.x86_64
-    yum -y install mysql-server mysql mysql-devel
-    yum install -y gcc gcc-c++ make zlib-devel
-    yum install -y xulrunner.i686
-    yum install -y libXtst.i686
+#   yum -y install mysql-server mysql mysql-devel
+    yum -y install mariadb-server
+    yum -y install gcc gcc-c++ make zlib-devel
+    yum -y install xulrunner.i686
+    yum -y install libXtst.i686
     chkconfig mysqld on
-    service mysqld start
+#    service mysqld start
+    systemctl start mariadb
+#   添加到开机自启动
+    systemctl enable mariadb.service
     echo "下载Server..."
-#修改过的
+#   修改过的
 #    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
-#原版
+#   原版
 #    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
 
 #    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
 #    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
 
-#坚果云
+#   坚果云
     wget -O /root/publickey.pem https://www.jianguoyun.com/p/DcpdTMsQrpP6BRiJvxQ
     wget -O /root/Script.pvf https://www.jianguoyun.com/p/DffjaEYQrpP6BRiFvxQ
     wget -O /root/Server.tar.gz https://www.jianguoyun.com/p/DWhYqA8QrpP6BRiHvxQ
@@ -66,6 +74,7 @@ function installDOF() {
     cp /root/Script.pvf /home/neople/game/
     cp /root/publickey.pem /home/neople/game/
     echo "添加防火墙端口..."
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8000 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 10013 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30303 -j ACCEPT' /etc/sysconfig/iptables
@@ -79,8 +88,12 @@ function installDOF() {
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30803 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20403 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 31100 -j ACCEPT' /etc/sysconfig/iptables
-    service iptables restart
-    service mysqld restart
+#   端口不全，这里先把防火墙关了
+    service iptables stop
+#    service iptables restart
+
+#    service mysqld restart
+    systemctl restart mariadb
 }
 
 #{
@@ -107,6 +120,11 @@ function deleteRoot6686() {
 }
 
 function removeTemp() {
+    echo -n -t 5 "完成安装，是否删除临时文件 y/n [y] ?"
+    read ANS
+    case $ANS in
+    y|Y|yes|Yes)
+    *)
     rm -f /root/Script.pvf
     rm -f /root/mysql57*
     rm -f /root/publickey.pem
@@ -115,6 +133,11 @@ function removeTemp() {
     rm -f /etc.tar.gz
     rm -f /Server.tar.gz
     rm -f /root/installDOFCentOS.sh
+    ;;
+    n|N|no|No)
+    exit 0
+    ;;
+    esac
 }
 
 install

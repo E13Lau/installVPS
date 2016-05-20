@@ -17,7 +17,7 @@ function install_vps() {
     install_Aria2
     addSwap
     install_net-speeder
-    install_Dropbox
+#    install_Dropbox
 }
 
 # Make sure only root can run our script
@@ -162,7 +162,7 @@ EOF
 
 function addSwap() {
     echo "添加 Swap..."
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6144
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=4000
     /sbin/mkswap /var/swap.1
     /sbin/swapon /var/swap.1
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
@@ -191,6 +191,11 @@ function install_Dropbox() {
     cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
     ~/.dropbox-dist/dropboxd
     ~/.dropbox-dist/dropboxd &
+}
+
+function install_denyhosts() {
+    yum -y install denyhosts
+
 }
 
 #function removeTemp() {
