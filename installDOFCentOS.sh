@@ -141,14 +141,7 @@ function removeTemp() {
     exit 0
     ;;
     *)
-    rm -f /root/Script.pvf
-    rm -f /root/mysql57*
-    rm -f /root/publickey.pem
-    rm -f /root/Server.tar.gz
-    rm -f /var.tar.gz
-    rm -f /etc.tar.gz
-    rm -f /Server.tar.gz
-    rm -f /root/installDOFCentOS.sh
+    exit 0
     ;;
     esac
 }
