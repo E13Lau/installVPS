@@ -15,9 +15,10 @@ function install {
 
 function addSwap() {
     echo "添加 Swap..."
-    if read -n1 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
-    then
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1000*$answer
+#   if read -n1 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
+#   then
+#   /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1000*$answer
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=6000
     mkswap /var/swap.1
     swapon /var/swap.1
 #   加入开机自动挂载
