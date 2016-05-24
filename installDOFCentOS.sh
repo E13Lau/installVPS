@@ -6,7 +6,7 @@
 #  Created by command.Zi on 16/5/11.
 #
 
-function install {
+function install() {
     addSwap
     installDOFOnCentOS5
     deleteRoot6686
@@ -26,10 +26,6 @@ function addSwap() {
 #   a 在该指令前面的行数后面插入该指令后面的内容
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
     echo "添加 Swap 成功"
-}
-
-function installDOFOnCentOS6 {
-    
 }
 
 function installDOFOnCentOS5() {
