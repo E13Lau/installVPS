@@ -9,7 +9,7 @@
 function install() {
     addSwap
     read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
-    read -p "输入服务器环境，1为国内，2为国外，然后回车：" networkState
+    read -p "输入服务器环境，1为国内，2为国外，3为自带(此项开始前要确保根目录下存在publickey.pem、Script.pvf、Server.tar.gz)，然后回车：" networkState
     if (($versionNumber==5)); then
         installSupportLibOnCentOS5
     elif (($versionNumber==6)); then
@@ -69,6 +69,8 @@ function installDOF() {
         wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
         wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
         wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
+    elif (($networkState==3)); then
+        cd ~
     else
         wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
         wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
