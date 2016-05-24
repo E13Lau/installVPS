@@ -9,10 +9,10 @@
 function install() {
     addSwap
     read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
-    read -p "输入服务器环境，1为国内，2为国外，然后回车： " networkState
-    if (($versionNumber=5)); then
+    read -p "输入服务器环境，1为国内，2为国外，然后回车：" networkState
+    if (($versionNumber==5)); then
         installSupportLibOnCentOS5
-    elif (($versionNumber=6)); then
+    elif (($versionNumber==6)); then
         installSupportLibOnCentOS6
     else
         echo "其实只有5和6"
@@ -64,7 +64,7 @@ function installDOF() {
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
     cd ~
     echo "下载Server..."
-    if (($networkState=1)); then
+    if (($networkState==1)); then
     #   七牛
         wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
         wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
