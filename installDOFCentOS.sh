@@ -35,8 +35,7 @@ function installDOFOnCentOS5() {
     echo "安装运行库..."
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
-    yum -y install xulrunner.i686
-    yum -y install libXtst.i686
+    yum -y install libstdc++.so.6
     chkconfig mysqld on
     service mysqld start
 #   添加到开机自启动
@@ -88,10 +87,8 @@ function installDOF() {
     cd ~
     echo "安装运行库..."
     yum -y remove mysql-libs.x86_64
-#   yum -y install mysql-server mysql mysql-devel
     yum -y install mariadb-server
     yum -y install gcc gcc-c++ make zlib-devel
-    
     yum -y install xulrunner.i686
     yum -y install libXtst.i686
     systemctl start mariadb
@@ -141,7 +138,6 @@ function installDOF() {
 #   端口不全，这里先把防火墙关了
     service iptables stop
 #    service iptables restart
-
     systemctl restart mariadb
 }
 
