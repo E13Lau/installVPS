@@ -8,11 +8,11 @@
 
 function install() {
     addSwap
-    read -p "输入centOS版本，例如5.11，输入5" versionNumber
-    read -p "输入服务器环境，1为国内，2为国外" networkState
-    if ( $versionNumber = 5 ); then
+    read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
+    read -p "输入服务器环境，1为国内，2为国外，然后回车： " networkState
+    if ( $versionNumber=5 ); then
         installSupportLibOnCentOS5
-    elif ( $versionNumber = 6 ); then
+    elif ( $versionNumber=6 ); then
         installSupportLibOnCentOS6
     else
         echo "其实只有5和6"
