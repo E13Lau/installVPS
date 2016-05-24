@@ -8,7 +8,16 @@
 
 function install() {
     addSwap
-    installDOFOnCentOS5
+    read -p "输入centOS版本，例如5.11，输入5" a
+    if ( $a = 5 ); then
+        installSupportLibOnCentOS5
+    elif ( $a = 6 ); then
+        installSupportLibOnCentOS6
+    else
+        echo "其实只有5和6"
+        exit 0
+    fi
+    installDOF
     deleteRoot6686
     removeTemp
 }
@@ -28,22 +37,36 @@ function addSwap() {
     echo "添加 Swap 成功"
 }
 
-function installDOFOnCentOS5() {
-    echo "获取 IP..."
-    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
-    cd ~
+function installSupportLibOnCentOS5() {
     echo "安装运行库..."
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
     yum -y install libstdc++.so.6
+#   添加到开机自启动
     chkconfig mysqld on
     service mysqld start
-#   添加到开机自启动
+}
+
+function installSupportLibOnCentOS6() {
+    echo "安装运行库..."
+    yum -y remove mysql-libs.x86_64
+    yum -y install mariadb-server
+    yum -y install gcc gcc-c++ make zlib-devel
+    yum -y install xulrunner.i686
+    yum -y install libXtst.i686
+    systemctl start mariadb
+    systemctl enable mariadb.service
+}
+
+function installDOF() {
+    echo "获取 IP..."
+    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+    cd ~
     echo "下载Server..."
 #   七牛
-    wget -O /root/publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
-    wget -O /root/Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
-    wget -O /root/Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
+    wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
+    wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
+    wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
 #   下载Server...
     cp Server.tar.gz /
     cd /
@@ -75,69 +98,6 @@ function installDOFOnCentOS5() {
 #   端口不全，这里先把防火墙关了
     service iptables stop
     service mysqld restart
-}
-
-function installDOF() {
-    echo "获取 IP..."
-    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
-#    IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
-#   if [ -z $IP ]; then
-#   IP=`curl -s ifconfig.me/ip`
-#   fi
-    cd ~
-    echo "安装运行库..."
-    yum -y remove mysql-libs.x86_64
-    yum -y install mariadb-server
-    yum -y install gcc gcc-c++ make zlib-devel
-    yum -y install xulrunner.i686
-    yum -y install libXtst.i686
-    systemctl start mariadb
-#   添加到开机自启动
-    systemctl enable mariadb.service
-    echo "下载Server..."
-#   修改过的
-#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
-#   原版
-#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
-
-#    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
-#    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
-
-#   七牛
-    wget -O /root/publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
-    wget -O /root/Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
-    wget -O /root/Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
-#   下载Server...
-    cp Server.tar.gz /
-    cd /
-    tar -zvxf Server.tar.gz
-    tar -zvxf var.tar.gz
-    cd /home/GeoIP-1.4.8/
-    ./configure
-    make && make check && make install
-    cd /home/neople/
-    sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.tbl"`
-    sed -i "s/192.168.56.10/${IP}/g" `find . -type f -name "*.cfg"`
-    cp /root/Script.pvf /home/neople/game/
-    cp /root/publickey.pem /home/neople/game/
-    echo "添加防火墙端口..."
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8000 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 10013 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30303 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30403 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 10315 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30603 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20203 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 7215 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20303 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 40401 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30803 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20403 -j ACCEPT' /etc/sysconfig/iptables
-    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 31100 -j ACCEPT' /etc/sysconfig/iptables
-#   端口不全，这里先把防火墙关了
-    service iptables stop
-#    service iptables restart
     systemctl restart mariadb
 }
 
@@ -147,7 +107,6 @@ function installDOF() {
 #   echo /dev/vdb1 /mnt/disk ext4 defaults,noatime 0 0 >> /etc/fstab
 #   mount /mnt/disk
 #}
-
 
 function deleteRoot6686() {
     HOSTNAME="127.0.0.1"
