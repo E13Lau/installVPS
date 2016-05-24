@@ -29,31 +29,18 @@ function addSwap() {
 }
 
 function installDOFOnCentOS5() {
-        echo "获取 IP..."
+    echo "获取 IP..."
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
-#    IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
-#   if [ -z $IP ]; then
-#   IP=`curl -s ifconfig.me/ip`
-#   fi
     cd ~
     echo "安装运行库..."
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
-    
     yum -y install xulrunner.i686
     yum -y install libXtst.i686
     chkconfig mysqld on
     service mysqld start
 #   添加到开机自启动
     echo "下载Server..."
-#   修改过的
-#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/32nht49ufisn3bh/Server.tar.gz?dl=0
-#   原版
-#    wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
-
-#    wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
-#    wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
-
 #   七牛
     wget -O /root/publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
     wget -O /root/Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
