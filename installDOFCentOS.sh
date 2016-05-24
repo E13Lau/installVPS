@@ -8,10 +8,11 @@
 
 function install() {
     addSwap
-    read -p "输入centOS版本，例如5.11，输入5" a
-    if ( $a = 5 ); then
+    read -p "输入centOS版本，例如5.11，输入5" versionNumber
+    read -p "输入服务器环境，1为国内，2为国外" networkState
+    if ( $versionNumber = 5 ); then
         installSupportLibOnCentOS5
-    elif ( $a = 6 ); then
+    elif ( $versionNumber = 6 ); then
         installSupportLibOnCentOS6
     else
         echo "其实只有5和6"
@@ -63,11 +64,16 @@ function installDOF() {
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
     cd ~
     echo "下载Server..."
-#   七牛
-    wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
-    wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
-    wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
-#   下载Server...
+    if ( $networkState = 1 ); then
+    #   七牛
+        wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
+        wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
+        wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
+    else
+        wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
+        wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
+        wget -O /root/publickey.pem https://www.dropbox.com/s/u2q0s5t56wvkk7l/publickey.pem?dl=0
+    fi
     cp Server.tar.gz /
     cd /
     tar -zvxf Server.tar.gz
@@ -100,13 +106,6 @@ function installDOF() {
     service mysqld restart
     systemctl restart mariadb
 }
-
-#{
-#   mkdir /mnt/disk
-#   echo >> /etc/fstab
-#   echo /dev/vdb1 /mnt/disk ext4 defaults,noatime 0 0 >> /etc/fstab
-#   mount /mnt/disk
-#}
 
 function deleteRoot6686() {
     HOSTNAME="127.0.0.1"
