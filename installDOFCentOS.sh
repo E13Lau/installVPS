@@ -139,12 +139,14 @@ function removeTemp() {
     rm -f /root/installDOFCentOS.sh
     ;;
     n|N|no|No)
-    exit 0
     ;;
     *)
-    exit 0
     ;;
     esac
 }
 
 install
+echo"***********************"
+echo" IP = ${IP}"
+echo"重启的话需要使用命令 service iptables stop 重新关闭防火墙"
+echo"***********************"
