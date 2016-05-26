@@ -40,6 +40,11 @@ function addSwap() {
 
 function installSupportLibOnCentOS5() {
     echo "安装运行库..."
+    if (($networkState==1)); then
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
+        yum clean all
+        yum makecache
+    fi
     yum -y update
     yum -y upgrade
     yum -y install mysql-server
@@ -53,6 +58,11 @@ function installSupportLibOnCentOS5() {
 
 function installSupportLibOnCentOS6() {
     echo "安装运行库..."
+    if (($networkState==1)); then
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+        yum clean all
+        yum makecache
+    fi
     yum -y update
     yum -y upgrade
     yum -y remove mysql-libs.x86_64
