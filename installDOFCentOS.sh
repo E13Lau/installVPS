@@ -48,6 +48,7 @@ function installSupportLibOnCentOS5() {
 #   添加到开机自启动
     chkconfig mysqld on
     service mysqld start
+    service mysqld enable
 }
 
 function installSupportLibOnCentOS6() {
