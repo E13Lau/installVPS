@@ -40,6 +40,8 @@ function addSwap() {
 
 function installSupportLibOnCentOS5() {
     echo "安装运行库..."
+    yum -y update
+    yum -y upgrade
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
     yum -y install libstdc++.so.6
@@ -50,6 +52,8 @@ function installSupportLibOnCentOS5() {
 
 function installSupportLibOnCentOS6() {
     echo "安装运行库..."
+    yum -y update
+    yum -y upgrade
     yum -y remove mysql-libs.x86_64
     yum -y install mariadb-server
     yum -y install gcc gcc-c++ make zlib-devel
