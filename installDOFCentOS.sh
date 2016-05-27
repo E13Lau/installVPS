@@ -50,6 +50,8 @@ function installSupportLibOnCentOS5() {
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
     yum -y install libstdc++.so.6
+    yum -y install glibc.i686
+    yum -y install libstdc++-4.4.7-xx.el6.i686
 #   添加到开机自启动
     chkconfig mysqld on
     service mysqld start
