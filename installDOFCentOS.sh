@@ -40,7 +40,7 @@ function addSwap() {
 
 function installSupportLibOnCentOS5() {
     echo "安装运行库..."
-    if (($networkState==1)); then
+    if (($networkState==3)); then
         wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
         yum clean all
         yum makecache
@@ -49,9 +49,8 @@ function installSupportLibOnCentOS5() {
     yum -y upgrade
     yum -y install mysql-server
     yum -y install gcc gcc-c++ make zlib-devel
-    yum -y install libstdc++.so.6
+    yum -y install libstdc++
     yum -y install glibc.i686
-    yum -y install libstdc++-4.4.7-xx.el6.i686
 #   添加到开机自启动
     chkconfig mysqld on
     service mysqld start
@@ -163,7 +162,7 @@ function removeTemp() {
 }
 
 install
-echo"***********************"
-echo" IP = ${IP}"
-echo"重启的话需要使用命令 service iptables stop 重新关闭防火墙"
-echo"***********************"
+echo "***********************"
+echo " IP = ${IP}"
+echo "重启的话需要使用命令 service iptables stop 重新关闭防火墙"
+echo "***********************"
