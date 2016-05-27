@@ -82,9 +82,9 @@ function installDOF() {
     echo "下载Server..."
     if (($networkState==5)); then
     #   七牛
-        wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
-        wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
-        wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
+#        wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
+#        wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
+#        wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
     elif (($networkState==3)); then
         wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
     else
