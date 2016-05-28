@@ -51,6 +51,7 @@ function installSupportLibOnCentOS5() {
     yum -y install gcc gcc-c++ make zlib-devel
     yum -y install libstdc++
     yum -y install glibc.i686
+    yum -y install libc.so.6
 #   添加到开机自启动
     chkconfig mysqld on
     service mysqld start
@@ -78,6 +79,18 @@ function installSupportLibOnCentOS6() {
 function installDOF() {
     echo "获取 IP..."
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+    echo -n "${IP} 是否是你的外网IP？(如果出现两条IP地址，请回 n 自行输入) y/n [n] ?"
+    read ans
+    case $ans in
+    y|Y|yes|Yes)
+    ;;
+    n|N|no|No)
+    read -p "输入你的外网IP地址，回车（确保是英文字符的点号）：" myip
+    IP=myip
+    ;;
+    *)
+    ;;
+    esac
     cd ~
     echo "下载Server..."
     if (($networkState==5)); then
