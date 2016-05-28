@@ -96,12 +96,8 @@ function installDOF() {
     if (($networkState==5)); then
         cd ~
     #   七牛
-#        wget -O publickey.pem http://o7bu9t1dx.bkt.clouddn.com/publickey.pem
-#        wget -O Script.pvf http://o7bu9t1dx.bkt.clouddn.com/Script.pvf
-#        wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
     elif (($networkState==3)); then
         cd ~
-#        wget -O Server.tar.gz http://o7bu9t1dx.bkt.clouddn.com/Server.tar.gz
     else
         wget -O /root/Server.tar.gz https://www.dropbox.com/s/9fz5grju3xf2q8c/Server.tar.gz?dl=0
         wget -O /root/Script.pvf https://www.dropbox.com/s/ofu0d6owm6h3igy/Script.pvf?dl=0
