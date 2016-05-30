@@ -86,7 +86,7 @@ function installDOF() {
     ;;
     n|N|no|No)
     read -p "输入你的外网IP地址，回车（确保是英文字符的点号）：" myip
-    IP=myip
+    IP=$myip
     ;;
     *)
     ;;
