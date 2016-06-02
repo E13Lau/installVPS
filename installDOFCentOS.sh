@@ -79,7 +79,7 @@ function installSupportLibOnCentOS6() {
 function installDOF() {
     echo "获取 IP..."
     IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
-    echo -n "${IP} 是否是你的外网IP？(如果出现两条IP地址，请回 n 自行输入) y/n [n] ?"
+    echo -n "${IP} 是否是你的外网IP？(如果不是你的外网IP或者出现两条IP地址，请回 n 自行输入) y/n [n] ?"
     read ans
     case $ans in
     y|Y|yes|Yes)
