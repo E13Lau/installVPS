@@ -7,7 +7,7 @@
 #
 
 function install() {
-    addSwap
+    echo "腾讯云的朋友，可以一试，确定按照这里的操作无误，还是无法成功，另找他法吧"
     read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
     read -p "输入服务器环境，2为国外(需要自行更换证书及pvf文件)，3为自带Server.tar.gz及证书及pvf文件(此项开始前要确保根目录下存在Server.tar.gz、publickey.pem、Script.pvf)，优先选3，然后回车：" networkState
     if (($versionNumber==5)); then
@@ -18,6 +18,8 @@ function install() {
         echo "其实只有5和6"
         exit 0
     fi
+    echo "添加交换空间，耐心等待⌛……"
+    addSwap
     installDOF
     deleteRoot6686
     removeTemp
