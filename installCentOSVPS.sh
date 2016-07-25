@@ -12,12 +12,17 @@ echo ""
 function install_vps() {
     rootness
     get_my_ip
+    read -p "是否安装shadowsocks？[y/n]" isInstallSS
+    read -p "是否安装Aria2？[y/n]" isInstallAria2
+    read -p "是否添加Swap？[y/n]" isAddSwap
+    read -p "是否安装net-speeder？[y/n]" isinstallNetspeeder
+    read -p "是否安装denyhosts？[y/n]" isDenyhosts
     install_SS
-    setup_SS
     install_Aria2
     addSwap
     install_net-speeder
-#    install_Dropbox
+    install_denyhosts
+
 }
 
 # Make sure only root can run our script
@@ -39,11 +44,16 @@ function get_my_ip() {
 }
 
 function install_SS() {
+    case $isInstallSS in
+    y|Y|yes|Yes)
     yum -y update
     echo "安装 shadowsocks..."
     yum install -y python-setuptools
     easy_install pip
     pip install shadowsocks
+
+    setup_SS
+    ;;
 }
 
 function setup_SS() {
@@ -75,6 +85,8 @@ EOF
 }
 
 function install_Aria2() {
+    case $isInstallAria2 in
+    y|Y|yes|Yes)
     echo "安装 Aria2..."
     wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
     rpm -ivh rpmforge-release-0.5.2-2.el6.rf.i686.rpm
@@ -158,17 +170,26 @@ bt-save-metadata=true
 #定时保存会话，需要1.16.1之后的某个release版本（比如1.16.2）
 save-session-interval=60
 EOF
+
+;;
 }
 
 function addSwap() {
+    case $isAddSwap in
+    y|Y|yes|Yes)
+
     echo "添加 Swap..."
-    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=4000
+    /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1152
     /sbin/mkswap /var/swap.1
     /sbin/swapon /var/swap.1
     sed -i '$a /var/swap.1 swap swap default 0 0' /etc/fstab
+    ;;
 }
 
 function install_net-speeder() {
+    case $isinstallNetspeeder in
+    y|Y|yes|Yes)
+
     wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
     rpm -ivh epel-release-6-8.noarch.rpm
     yum -y install libnet libpcap libnet-devel libpcap-devel
@@ -185,22 +206,69 @@ function install_net-speeder() {
     rm -f epel-release-6-8.noarch.rpm
     rm -f rpmforge-release-0.5.2-2.el6.rf.i686.rpm
     rm -f master.zip
-}
 
-function install_Dropbox() {
-    cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
-    ~/.dropbox-dist/dropboxd
-    ~/.dropbox-dist/dropboxd &
+    ;;
 }
 
 function install_denyhosts() {
+    case $isDenyhosts in
+    y|Y|yes|Yes)
+    echo "安装denyhosts..."
     yum -y install denyhosts
-
+    cat << EOF > /etc/denyhosts.conf
+SECURE_LOG = /var/log/secure
+HOSTS_DENY = /etc/hosts.deny
+PURGE_DENY = 4w
+BLOCK_SERVICE  = sshd
+DENY_THRESHOLD_INVALID = 2
+DENY_THRESHOLD_VALID = 2
+DENY_THRESHOLD_ROOT = 2
+DENY_THRESHOLD_RESTRICTED = 1
+WORK_DIR = /var/lib/denyhosts
+SUSPICIOUS_LOGIN_REPORT_ALLOWED_HOSTS=YES
+HOSTNAME_LOOKUP=YES
+LOCK_FILE = /var/lock/subsys/denyhosts
+ADMIN_EMAIL = root
+SMTP_HOST = localhost
+SMTP_PORT = 25
+SMTP_FROM = DenyHosts <nobody@localhost>
+SMTP_SUBJECT = DenyHosts Report from $[HOSTNAME]
+AGE_RESET_VALID=5d
+AGE_RESET_ROOT=25d
+AGE_RESET_RESTRICTED=25d
+AGE_RESET_INVALID=10d
+DAEMON_LOG = /var/log/denyhosts
+DAEMON_SLEEP = 30s
+DAEMON_PURGE = 1h
+EOF
+    service denyhosts start
+    ;;
 }
 
-#function removeTemp() {
-#
-#}
+funcation installNginx() {
+    echo "installing Nginx..."
+    yum -y install nginx
+    service nginx start
+    chkconfig nginx on
+}
+
+funcation insstallMysql() {
+    echo "installing mysql"
+    yum -y install mysql-server
+    service mysqld restart
+    chkconfig mysqld on
+}
+
+funcation installPHP() {
+    echo "installing php"
+    yum -y install php-fpm php-mysql
+    service php-fpm start
+    chkconfig php-fpm on
+    mkdir /var/lib/php/session/
+    chown -R apache:apache /var/lib/php/session/
+}
+
+#自动化安装并启动一个博客程序及其运行环境的docker容器
 #google authentication
 
 install_vps
