@@ -69,10 +69,10 @@ vi .env
 //  ss-panel v3 配置
 //
 // !!! 修改此key为随机字符串确保网站安全 !!!
-key = '@$@%#fdDWERW@#FDF#$#'
+key = '@$@%#fdDWERW@#FDF#$#xxxxx'
 debug =  'false'  //  正式环境请确保为false #如果启动站点出现“Slim Application Error”，则把debug设置为‘true’，即可在页面上查看错误日志。
 appName = 'ss控制平台v3.0'             //站点名称
-baseUrl = 'http://ss.glrou.xyz'            // 站点地址
+baseUrl = 'http://xxx.xxx'            // 站点地址
 timeZone = 'PRC'        // RPC 中国时间  UTC 格林时间
 pwdMethod = 'sha256'       // 密码加密   可选 md5,sha256
 salt = ''               // 密码加密用，从旧版升级请留空
