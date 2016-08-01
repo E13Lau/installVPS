@@ -9,6 +9,7 @@
 function install() {
     echo "腾讯云的朋友，可以一试，确定按照这里的操作无误，还是无法成功，另找他法吧"
     read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
+#TODO:直接取系统版本号判断，再检测文件是否存在，不符合都跳出
     read -p "输入服务器环境，2为国外(需要自行更换证书及pvf文件)，3为自带Server.tar.gz及证书及pvf文件(此项开始前要确保根目录下存在Server.tar.gz、publickey.pem、Script.pvf)，优先选3，然后回车：" networkState
     if (($versionNumber==5)); then
         installSupportLibOnCentOS5
@@ -134,6 +135,7 @@ function installDOF() {
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 31100 -j ACCEPT' /etc/sysconfig/iptables
 #   端口不全，这里先把防火墙关了
     service iptables stop
+#   TODO:关闭防火墙自启动
     service mysqld restart
     systemctl restart mariadb
 }
@@ -158,14 +160,10 @@ function removeTemp() {
     read ANS
     case $ANS in
     y|Y|yes|Yes)
-    rm -f /root/Script.pvf
     rm -f /root/mysql57*
-    rm -f /root/publickey.pem
-    rm -f /root/Server.tar.gz
     rm -f /var.tar.gz
     rm -f /etc.tar.gz
     rm -f /Server.tar.gz
-    rm -f /root/installDOFCentOS.sh
     ;;
     n|N|no|No)
     ;;
