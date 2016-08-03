@@ -26,6 +26,14 @@ function install() {
     removeTemp
 }
 
+function getIP() {
+    echo "获取 IP..."
+    IP=`curl -s http://v4.ipv6-test.com/api/myip.php`
+    if [ -z $IP ]; then
+    IP=`curl -s https://www.boip.net/api/myip`
+    fi
+}
+
 function addSwap() {
     echo "添加 Swap..."
 #   if read -n1 -p "请输入虚拟内存大小（正整数、单位为GB、默认6  GB）" answer
@@ -80,8 +88,7 @@ function installSupportLibOnCentOS6() {
 }
 
 function installDOF() {
-    echo "获取 IP..."
-    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+    getIP
     echo -n "${IP} 是否是你的外网IP？(如果不是你的外网IP或者出现两条IP地址，请回 n 自行输入) y/n [n] ?"
     read ans
     case $ans in
