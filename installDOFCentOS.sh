@@ -9,6 +9,7 @@
 function install() {
     echo "腾讯云的朋友，可以一试，确定按照这里的操作无误，还是无法成功，另找他法吧"
     read -p "输入centOS版本，例如5.11，输入5，然后回车：" versionNumber
+#TODO:直接取系统版本号判断，再检测文件是否存在，不符合都跳出
     read -p "输入服务器环境，2为国外(需要自行更换证书及pvf文件)，3为自带Server.tar.gz及证书及pvf文件(此项开始前要确保根目录下存在Server.tar.gz、publickey.pem、Script.pvf)，优先选3，然后回车：" networkState
     if (($versionNumber==5)); then
         installSupportLibOnCentOS5
@@ -23,6 +24,14 @@ function install() {
     installDOF
     deleteRoot6686
     removeTemp
+}
+
+function getIP() {
+    echo "获取 IP..."
+    IP=`curl -s http://v4.ipv6-test.com/api/myip.php`
+    if [ -z $IP ]; then
+    IP=`curl -s https://www.boip.net/api/myip`
+    fi
 }
 
 function addSwap() {
@@ -76,8 +85,7 @@ function installSupportLibOnCentOS6() {
 }
 
 function installDOF() {
-    echo "获取 IP..."
-    IP=`/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
+    getIP
     echo -n "${IP} 是否是你的外网IP？(如果不是你的外网IP或者出现两条IP地址，请回 n 自行输入) y/n [n] ?"
     read ans
     case $ans in
@@ -118,7 +126,24 @@ function installDOF() {
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 8000 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT' /etc/sysconfig/iptables
     sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 10013 -j ACCEPT' /etc/sysconfig/iptables
+<<<<<<< HEAD
     service iptables restart
+=======
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30303 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30403 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 10315 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30603 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20203 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 7215 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20303 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 40401 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 30803 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 20403 -j ACCEPT' /etc/sysconfig/iptables
+    sed -i '/INPUT.*NEW.*22/a -A INPUT -m state --state NEW -m tcp -p tcp --dport 31100 -j ACCEPT' /etc/sysconfig/iptables
+#   端口不全，这里先把防火墙关了
+    service iptables stop
+#   TODO:关闭防火墙自启动
+>>>>>>> f3aa119d745310c5a9b39910ce4c4f133a93880a
     service mysqld restart
     systemctl restart mariadb
 }
@@ -143,14 +168,10 @@ function removeTemp() {
     read ANS
     case $ANS in
     y|Y|yes|Yes)
-    rm -f /root/Script.pvf
     rm -f /root/mysql57*
-    rm -f /root/publickey.pem
-    rm -f /root/Server.tar.gz
     rm -f /var.tar.gz
     rm -f /etc.tar.gz
     rm -f /Server.tar.gz
-    rm -f /root/installDOFCentOS.sh
     ;;
     n|N|no|No)
     ;;
