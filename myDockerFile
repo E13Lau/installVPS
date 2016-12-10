@@ -1,0 +1,21 @@
+FROM centos:5.11
+
+MAINTAINER 1687497563@qq.com
+
+WORKDIR /root
+
+RUN yum groupinstall -y "Development tools"
+
+RUN yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel wget
+
+ADD Python-2.7.12.tgz /root
+
+WORKDIR Python-2.7.12
+
+RUN ./configure && make && make install
+
+WORKDIR /root
+
+RUN wget --no-check-certificate https://bootstrap.pypa.io/ez_setup.py && python ez_setup.py --insecure && easy_install supervisor
+
+echo_supervisord_conf > /etc/supervisord.conf
